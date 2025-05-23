@@ -1,5 +1,9 @@
 import { fetchWeather, fetchCity } from "./src/fetcher.js";
-import { renderSearchHistory, renderSearchResult } from "./src/handleSearch.js";
+import {
+  renderSearchHistory,
+  renderSearchHistoryList,
+  renderSearchResult,
+} from "./src/handleSearch.js";
 
 // search bar query selector
 const searchBar = document.querySelector("[data-search-container]");
@@ -8,6 +12,7 @@ const searchList = searchBar.querySelector("[data-search-result-list]");
 const currentLocation = document.querySelector("[data-current-location]");
 const selectUnit = document.querySelector("[data-select-unit]");
 
+let searchHistory;
 let currentWeather;
 let currentCity = JSON.parse(localStorage.getItem("currentCity")) || "London";
 let cityData;
@@ -15,6 +20,7 @@ let units = "metric";
 
 // fetch saved weather data on load
 window.addEventListener("DOMContentLoaded", async (e) => {
+  renderSearchHistoryList();
   cityData = await fetchCity(currentCity);
   // currentWeather = await fetchWeather(cityData[0].lat, cityData[0].lon, units);
   console.log(cityData);

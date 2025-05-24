@@ -1,1 +1,17 @@
 @import "tailwindcss";
+
+@media (width >= 640px) {
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 5px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(26, 26, 26, 0.774);
+    border-radius: 4px;
+    width: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(77, 76, 76, 0.801);
+  }
+}

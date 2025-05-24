@@ -1,7 +1,7 @@
 import { fetchWeather, fetchCity } from "./fetcher.js";
 import clearElement from "./clearElement.js";
+import { renderWeatherData } from "./weatherData.js";
 
-let homeCity = JSON.parse(localStorage.getItem("homeCity")) || null;
 let searchHistory = JSON.parse(localStorage.getItem("searchHistory")) || [];
 let searchTimeout;
 let searchResult = [];
@@ -145,7 +145,7 @@ export async function renderSearchHistory(e, element) {
 //function to fetch weather data and update the search history for selected city
 async function handleClick(city, element) {
   const weatherData = await fetchWeather(city.lat, city.lon, "metric");
-  console.log(weatherData);
+  renderWeatherData(weatherData, city);
 
   if (!searchHistory.some((item) => item.lat === city.lat)) {
     searchHistory.push(city);
@@ -160,6 +160,8 @@ async function handleClick(city, element) {
 let isHistoryListenerAttached = false; //to check if the event listener is attached to the search history list
 //function to render the search history as list under header
 export function renderSearchHistoryList() {
+  let homeCity = JSON.parse(localStorage.getItem("homeCity")) || null;
+
   const searchHistoryContainer = document.querySelector(
     "[data-search-history]"
   );
@@ -196,10 +198,19 @@ export function renderSearchHistoryList() {
           })}'
           class="flex items-center bg-cyan-100 hover:bg-cyan-200 py-1 px-2 rounded-sm transition duration-200 ease-in-out cursor-pointer"
         >
-          <p class="mr-2">${city.name}</p>
+          <p class="mr-2 truncate">${city.name}</p>
           ${
             homeCity?.lat === city.lat
-              ? "🏠"
+              ? `<div><svg
+              width="20"
+              height="20"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+              >
+              <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z"/>
+              </svg> 
+              </div>`
               : `
             <button
             data-delete
@@ -233,7 +244,6 @@ async function handleFetchWeatherOrDeleteCityHistory(e) {
     e.stopPropagation();
     const lat = e.target.dataset.lat;
     searchHistory = searchHistory.filter((city) => city.lat !== parseInt(lat));
-    console.log(searchHistory);
     renderSearchHistoryList();
     localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
 
@@ -248,6 +258,6 @@ async function handleFetchWeatherOrDeleteCityHistory(e) {
       cityData.lon,
       "metric"
     );
-    console.log(weatherData);
+    renderWeatherData(weatherData, cityData);
   }
 }

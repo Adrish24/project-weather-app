@@ -4,27 +4,24 @@ import {
   renderSearchHistoryList,
   renderSearchResult,
 } from "./src/handleSearch.js";
+import { renderWeatherData } from "./src/weatherData.js";
 
 // search bar query selector
 const searchBar = document.querySelector("[data-search-container]");
 const searchInput = searchBar.querySelector("input");
 const searchList = searchBar.querySelector("[data-search-result-list]");
 const currentLocation = document.querySelector("[data-current-location]");
-const selectUnit = document.querySelector("[data-select-unit]");
-
-let searchHistory;
-let currentWeather;
-let currentCity = JSON.parse(localStorage.getItem("currentCity")) || "London";
-let cityData;
-let units = "metric";
 
 // fetch saved weather data on load
 window.addEventListener("DOMContentLoaded", async (e) => {
+  let homeCity = JSON.parse(localStorage.getItem("homeCity")) || null;
+  let currentWeather = await fetchWeather(
+    homeCity?.lat,
+    homeCity?.lon,
+    "metric"
+  );
   renderSearchHistoryList();
-  cityData = await fetchCity(currentCity);
-  // currentWeather = await fetchWeather(cityData[0].lat, cityData[0].lon, units);
-  console.log(cityData);
-  // console.log(currentWeather);
+  renderWeatherData(currentWeather, homeCity);
 });
 
 // search city names
@@ -54,13 +51,4 @@ currentLocation.addEventListener("click", async (e) => {
     console.log(units);
     console.log(currentWeather);
   });
-});
-
-// set unit type
-selectUnit.addEventListener("change", async (e) => {
-  units = e.target.value;
-  currentWeather = await fetchWeather(cityData[0].lat, cityData[0].lon, units);
-  console.log(units);
-  console.log(cityData);
-  console.log(currentWeather);
 });

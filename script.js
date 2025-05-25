@@ -1,8 +1,4 @@
-import {
-  fetchWeather,
-  fetchCity,
-  fetchCityByLatAndLon,
-} from "./src/fetcher.js";
+import { fetchWeather, fetchCityByLatAndLon } from "./src/fetcher.js";
 import {
   renderSearchHistory,
   renderSearchHistoryList,

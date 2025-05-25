@@ -44,8 +44,8 @@ export async function renderSearchResult(e, element) {
                   `<li 
                 data-city='${JSON.stringify({
                   name: city.name,
-                  lat: parseInt(city.lat),
-                  lon: parseInt(city.lon),
+                  lat: city.lat,
+                  lon: city.lon,
                   state: city.state,
                   country: city.country,
                 })}'
@@ -96,7 +96,6 @@ export async function renderSearchResult(e, element) {
 // functiong triggered when the imput is empty and on focus
 export async function renderSearchHistory(e, element) {
   if (searchHistory.length === 0) return;
-  console.log(searchHistory);
   const searchTerm = e.target.value.trim();
 
   // if the search term is empty, render the search history
@@ -200,7 +199,7 @@ export function renderSearchHistoryList() {
         >
           <p class="mr-2 truncate">${city.name}</p>
           ${
-            homeCity?.lat === city.lat
+            homeCity?.name === city.name
               ? `<div><svg
               width="20"
               height="20"
@@ -214,7 +213,7 @@ export function renderSearchHistoryList() {
               : `
             <button
             data-delete
-            data-lat="${city.lat}"
+            data-name="${city.name}"
             class="
             px-1.5
             hover:font-semibold 
@@ -242,8 +241,8 @@ export function renderSearchHistoryList() {
 async function handleFetchWeatherOrDeleteCityHistory(e) {
   if (e.target.hasAttribute("data-delete")) {
     e.stopPropagation();
-    const lat = e.target.dataset.lat;
-    searchHistory = searchHistory.filter((city) => city.lat !== parseInt(lat));
+    const name = e.target.dataset.name;
+    searchHistory = searchHistory.filter((city) => city.name !== name);
     renderSearchHistoryList();
     localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
 

@@ -1,4 +1,8 @@
-import { fetchWeather, fetchCity } from "./src/fetcher.js";
+import {
+  fetchWeather,
+  fetchCity,
+  fetchCityByLatAndLon,
+} from "./src/fetcher.js";
 import {
   renderSearchHistory,
   renderSearchHistoryList,
@@ -15,7 +19,7 @@ const currentLocation = document.querySelector("[data-current-location]");
 // fetch saved weather data on load
 window.addEventListener("DOMContentLoaded", async (e) => {
   let homeCity = JSON.parse(localStorage.getItem("homeCity")) || null;
-  let currentWeather = await fetchWeather(
+  const currentWeather = await fetchWeather(
     homeCity?.lat,
     homeCity?.lon,
     "metric"
@@ -46,9 +50,8 @@ currentLocation.addEventListener("click", async (e) => {
   navigator.geolocation.getCurrentPosition(async (position) => {
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
-    console.log(lat, lon);
-    currentWeather = await fetchWeather(lat, lon, units);
-    console.log(units);
-    console.log(currentWeather);
+    const city = await fetchCityByLatAndLon(lat, lon);
+    const currentWeather = await fetchWeather(lat, lon, "metric");
+    renderWeatherData(currentWeather, city[0]);
   });
 });
